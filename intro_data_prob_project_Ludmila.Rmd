@@ -162,7 +162,7 @@ summary(brfss2013)
 <hr>
 
 <p>For convenience reasons it recommended to reduced the dataset. The number of "NAs" in each variable must be checked (to see if it's required to apply an algorithm to fill in the missing data or delete the incomplete rows). Also verify IRQ's, among others. <br><br>
-The visualization has been used to verify the distribution and to find possible outliners. As for example: histograms, boxplots and Q-Q Plot to visually analyze the data.
+The visualization has been used to verify the distribution and to find possible outliners. As for example: histograms, boxplots and Q-Q Plot's to visually analyze the data.
 <br><br>
 These steps can give us a clearer idea of our data set.</p>
 
