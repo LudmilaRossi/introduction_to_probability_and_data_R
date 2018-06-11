@@ -1,4 +1,5 @@
-# Introduction - Data, Duke University. Course 'Introduction to Probability and Data in R'. Coursera.org
+# Introduction - Data, Duke University. 
+## Course 'Introduction to Probability and Data in R'. Coursera.org
 The following files were submitted for the final project of Duke University's Introduction to Probability and Data in R course hosted by Coursera
 
 ### Submission by Ludmila Rossi
