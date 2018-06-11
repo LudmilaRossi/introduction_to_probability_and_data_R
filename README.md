@@ -68,5 +68,3 @@ Source: [Duke University Data and Visualization Services](http://guides.library.
 This project feautures a RMarkdown document produced in RStudio and knitted to HTML. Please view the .html, .Rmd, or .md file for an overview of both the assignment questions and my responses.
 
 Project coded by Ludmila Rossi - released into the public domain for educational purposes in 2018. 
-
-Project coded by Ludmila Rossi - released into the public domain for educational purposes in 2018. 
