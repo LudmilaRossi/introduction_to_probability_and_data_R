@@ -1,6 +1,6 @@
-# Introduction - Data, Duke University. 
+# Introduction - Duke University. 
 ## Course 'Introduction to Probability and Data in R'. Coursera.org
-The following files were submitted for the final project of Duke University's Introduction to Probability and Data in R course hosted by Coursera
+The following files were submitted for the final project of Duke University's Introduction to Probability and Data in R course hosted by Coursera.org
 
 ### Submission by Ludmila Rossi
 Completion Date: Jun 11, 2018
@@ -33,4 +33,3 @@ Source: [Duke University Data and Visualization Services](http://guides.library.
 
 ### The Scripts
 This project feautures a RMarkdown document produced in RStudio and knitted to HTML. Please view the .html, .Rmd, or .md file for an overview of both the assignment questions and my responses.
-The following files were submitted for the final project of Duke University's Introduction to Probability and Data in R course hosted by Coursera.org
