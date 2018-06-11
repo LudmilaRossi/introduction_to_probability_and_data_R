@@ -1,0 +1,434 @@
+---
+title: "Exploring the BRFSS data"
+output: 
+html_document: 
+fig_height: 4
+highlight: pygments
+theme: spacelab
+css: style.css
+---
+  
+Submission by: Ludmila Rossi   
+Date:   11/06/2018
+<hr>
+  
+<h2><b>Setup</b></h2>
+
+<h3>Load packages</h3>
+
+```{r load-packages, message = FALSE}
+library('ggplot2')    # library to create plots
+library('plyr')       # data manipulation
+library('dplyr')      # ""
+library('gridExtra')  # supports the layout functionality with ggplot
+library('ggmap')      # visualize maps 
+library('knitr')      # required to apply knitr options 
+library('gtable')     # used to overlay plots in ggplot
+library('grid')       # ""
+library('scales')       # ""
+
+```
+<br>
+<h4>Load data and set global knitr options</h4>
+
+```{r load-data}
+#------------------------------------------------------------------------------------------------------------
+# Download and extract Data and load file
+#------------------------------------------------------------------------------------------------------------
+
+# Load data and set global knitr options 
+load(file = 'brfss2013.RData')
+
+# apply general knitr options
+#opts_chunk$set(echo = TRUE,fig.align='center')
+knitr::opts_chunk$set(comment=NA, fig.align='center')
+
+```
+
+<hr>
+
+<h3>Part 1: Data</h3>
+<br>
+<h4>Behavioral Risk Factor Surveillance System</h4>
+
+<p>The Behavioral Risk Factor Surveillance System (BRFSS) is a collaborative project between all of the states in the United States (US) and participating US territories and the Centers for Disease Control and Prevention (CDC).
+<br><br>
+The BRFSS objective is to collect uniform, state-specific data on preventive health practices and risk behaviors that are linked to chronic diseases, injuries, and preventable infectious diseases that affect the adult population. 
+<br><br>
+Factors assessed by the BRFSS in 2013 include tobacco use, HIV/AIDS knowledge and prevention, exercise, immunization, health status, healthy days - health-related quality of life, health care access, inadequate sleep, hypertension awareness, cholesterol awareness, chronic health conditions, alcohol consumption, fruits and vegetables consumption, arthritis burden, and seatbelt use.
+</p>
+
+<br>
+
+<h4>Data collection</h4>
+<p>The BRFSS is a cross-sectional telephone survey conducted by state health departments with technical and methodological assistance provided by CDC. In addition to all 50 states, the BRFSS is also conducted by health departments in The District of Columbia, Guam, Puerto Rico, and the U.S. Virgin Islands.
+<br><br>
+Specifically, the study is a retrospective observational study (to all non-institutionalized adults of 18 years of age and older residing in the USA), as it asks respondents about various aspects of their health in the previous months to their contact. The study's observations are collected by contacting respondents by phone calls. It's the largest survey in the world.
+<br><br>
+Since 2011, BRFSS conducts both landline telephone- and cellular telephone-based surveys. In conducting the BRFSS landline telephone survey, interviewers collect data from a randomly selected adult in a household. In conducting the cellular telephone version of the BRFSS questionnaire, interviewers collect data from an adult who participates by using a cellular telephone and resides in a private residence or college housing.
+<br><br>
+BRFSS field operations are managed by state health departments that follow protocols adopted by the states with technical assistance provided by CDC. State health departments collaborate during survey development, and conduct the interviews themselves or by using contractors. The data are transmitted to the CDC for editing, processing, weighting, and analysis. An edited and weighted data file is provided to each participating health department for each year of data collection, and summary reports of state-specific data are prepared by the CDC.</p>
+
+<br>
+
+<h5>The Landline Sample</h5>
+<p>Disproportionate stratified sampling (DSS)* has been used for the landline sample since 2003. DSS draws telephone numbers from two strata (lists) that are based on the presumed density of known telephone household numbers. In this design, telephone numbers are classified into strata that are either high density (listed 1+ block telephone numbers) or medium density (not listed 1+ block telephone numbers) to yield residential telephone numbers.</p>
+
+<i style="font-size: 10px;">*Disproportionate stratification is a type of stratified sampling. With disproportionate stratification, the sample size of each stratum does not have to be proportionate to the population size of the stratum. This means that two or more strata will have different sampling fractions.</i>
+<br><br>
+
+<h5>The Cellular Telephone Sample</h5>
+<p>The cellular telephone sample is randomly generated from a sampling frame of confirmed cellular area code and prefix combinations. Cellular telephone respondents are randomly selected with each having equal probability of selection.</p>
+
+<br>
+
+<h4>Scope of Inference</h4>
+<p>The Centers for Disease Control and Prevention manages the study, but the standardized interviews are conducted by agents in each state or territory involved in the study. 
+<br><br>
+The study does not involve random assignment of respondents to the factors under consideration. Thus, the study is not an experiment and, thus, there are limitations in what conclusions can be drawn from the data collected. No causality can be determined from this observational study, only associational relationships. Any identified associations will also be complicated by lurking variables as it will be difficult to rule out other confounding factors that may lead to such associations.
+<br><br>
+Given these limitations and the potential for sampling bias, care must be taken when making too many claims from the data. Given all these concerns, the sample size is large and the data represent the adult population of the USA. So the study is generalizable, but the scope of the inference is narrow and the causality can not be determined taking into account these and other limitations of the design of this observational study.</p>
+
+<br>
+
+<h4>Generalizability</h4>
+<p>The BRFSS goal is to support at least 4,000 interviews per state each year.
+<br><br>
+Data weighting is an important statistical process that attempts to remove bias in the sample. The BRFSS uses a weighting process includes two steps: design weighting and iterative proportional fitting (also known as "raking" weighting.)
+<br><br>
+Overall, an estimated 97.5% of US households had telephone service in 2012. Telephone coverage varies across states with a range of 95.3% in New Mexico to 98.6% in Connecticut. The data collection is based on a stratified sampling strategy. The population is divided into groups (States) called strata. Then a random sampling(telephone), has been employed within each stratum.
+<br><br>
+There is still a small probability that two individuals living in the same household could participate in the survey, if they are using individual cell phones. I such cases we can assume that certain behavioral pattern might be equal (nutrition, excercise etc.). But still the chance is rather small.</p>
+
+<br>
+
+<h4>Causality</h4>
+<p>The study, by gathering survey data, has the character of an observational study. Causal conclusions based on observational data are not recommended. Observational studies are only enough to show associations. Even if random sampling, as mentionaed above, has been applied the questionnaire leaves a lot of open questions. There are environmental, stress, social etc. aspects to be considered if we want to consider the health of a person.</p>
+
+<br>
+
+<h4>The data and further information were obtained from the following sources:</h4>
+
+<p>Dataset: <a href="https://d3c33hcgiwev3.cloudfront.net/_384b2d9eda4b29131fb681b243a7767d_brfss2013.RData?Expires=1464220800&amp;Signature=QjjfkYt-C-wTRcwEvnuyFDvphasfoKEAkMo-088OscAJxIV7NbLUqOmkJZBXsVLUuJmJZmatWsi7bOoG9WMkp18BK4bGVvEpAjHyar9fOMmT9TcnFax5m2Dj8nJZzqox4IV20XOtnijNbzwQH4N8yd7CtbIc1tNTgeo8mq5ezjQ_&amp;Key-Pair-Id=APKAJLTNE6QMUY6HBC5A">Behavioral Risk Factor Surveillance System Data</a> [53MB]
+<br>
+General Information: <a href="http://www.cdc.gov/brfss/annual_data/annual_2013.html">2013 Survey Data Information</a>
+
+<ul>
+<li>
+<a href="http://www.cdc.gov/brfss/annual_data/2013/pdf/overview_2013.pdf">2013 BRFSS Overview</a> [PDF - 84 KB]<br> Provides information on the background, design, data collection and processing, statistical, and <br> analytical issues for the combined landline and cell phone data set.<br><br>
+</li>
+
+<li>
+<a href="http://www.cdc.gov/brfss/annual_data/2013/pdf/codebook13_llcp.pdf">2013 BRFSS Codebook</a> [PDF - 2.7 MB]<br> Codebook for the file showing variable name, location, and frequency of values for all reporting <br> areas combined for the combined landline and cell phone data set.<br><br>
+</li>
+
+<li>
+<a href="http://www.cdc.gov/brfss/annual_data/2013/pdf/2013_calculated_variables_version15.pdf">Calculated Variables in Data Files</a> [PDF - 421 KB] <br>
+</li>
+
+<li>
+<a href="http://www.cdc.gov/brfss/annual_data/2013/pdf/compare_2013.pdf">Comparability of Data</a> [PDF - 96 KB] <br> Comparability of data across reporting areas for the combined landline and cell phone data set. <br> The BRFSS 2012 data is not directly comparable to years of BRFSS data before 2011 because of the <br> changes in weighting methodology and the addition of the cell phone sampling frame.<br><br>
+</li>
+
+<li>
+<a href="http://www.cdc.gov/brfss/annual_data/2013/pdf/weighting_data.pdf">2013 Weighting Formula</a> [PDF - 98 KB]<br>
+</li>
+
+<li>
+<a href="http://www.cdc.gov/brfss/annual_data/2013/summary_matrix_2013_version5.html">Summary Matrix of Calculated Variables (CV) in the 2013 Data File</a>
+</li>
+</ul>
+
+</p>
+<hr>
+
+```{r}
+
+# Size of the dataset
+dim(brfss2013)
+
+```
+<br>
+<p>The output for the summary- and str() - function has been hidden because the output would be too detailed (verbose) by having 330 variables.</p>
+
+```{r, results="hide"}
+
+# Verify types and summary of each variable 
+str(brfss2013)
+summary(brfss2013)
+
+```
+
+<hr>
+
+<p>For convenience reasons it recommended to reduced the dataset. The number of "NAs" in each variable must be checked (to see if it's required to apply an algorithm to fill in the missing data or delete the incomplete rows). Also verify IRQ's, among others. <br><br>
+The visualization has been used to verify the distribution and to find possible outliners. As for example: histograms, boxplots and Q-Q Plot to visually analyze the data.
+<br><br>
+These steps can give us a clearer idea of our data set.</p>
+
+```{r fig.width = 8, fig.height = 8}
+
+# Retrieve only the required columns
+Col <- c('X_state', 'X_bmi5', 'X_bmi5cat', 'genhlth', 'hlthpln1', 'exerany2', 'X_frtlt1', 'X_veglt1', 'X_pacat1', 'exract11', 'X_age80', 'weight2', 'height3', 'income2', 'educa')
+datAnalysis <- brfss2013[, Col]
+str(datAnalysis)
+
+# Show histogram and boxplot to verify the distribution 
+hist(datAnalysis$X_bmi5, breaks = 100, col = 'violet')
+boxplot(datAnalysis$X_bmi5, main = "Boxplot")
+
+# Calculate the mean 
+mean(datAnalysis$X_bmi5, na.rm = TRUE)
+
+# Calculate the median
+median(datAnalysis$X_bmi5, na.rm = TRUE)
+
+```
+
+<hr>
+  
+<h3>Part 2: Research questions</h3>
+<p>In my analysis, I focused my research questions on the relation between general health status and physical training, taking into account BMI, age, work status, income level, and difference between men and women.</p>
+
+<br>
+
+<h4>Research question 1:</h4>
+<p>Is there a correlation between access to "general health" and physical exercise in the US adult population?</p>
+
+<br>
+
+<h4>Research question 2:</h4>
+<p>Is there an association between BMI and the quantity of total physical activity per week for males and females?
+<br><br>
+<b>Variables: </b>
+<ul>
+<li>Sex</li>
+<li>X_bmi5</li>
+<li>pa1min</li>
+<li>corr_bmi_phys_activity: correlation of the BMI and the minutes of total physical activity per week</li>
+</ul>
+</p>
+
+<br>
+
+<h4>Research question 3:</h4>
+<p>Is there a relation between physical activity, work status and income level in the US adult population?
+<br><br>
+There are 2 possible opposing hypotheses: on the one hand, infer that a higher level of income or employment could influence more physical activity. And, on the other hand, that a higher level of income or status can cause less time for physical activity.</p>
+
+<br>
+
+<h4>Research question 4:</h4>
+<p>Related to the previous research question, it could also discover if there is any correlation between income levels and the state of general health. 
+<br><br>
+Further, it can be analyzed if there are notable differences between genres. 
+<br><br>
+Two hypotheses can be inferred: the population with well-paid jobs implies benefits that promote general health, such as health insurance and access to healthy habits.
+<br><br>
+By contrast, employees with high incomes are more likely to suffer higher stress levels and to work longer hours.
+<br><br>
+
+<hr>
+  
+  <h3>Part 3: Exploratory data analysis</h3>
+  <br>
+  <h4>Research question 1:</h4>
+  
+  <p>A first part of question 1 answers what percentage of the US population is associated with what category of BMI.
+<br><br>
+With this analysis it can get an overview of how to classify this scenario. First, it has to preprocess the data to be able to evaluate the percentage of the US population according to the BMI category. After analyzing the data, for question 1, it's best to create a subset of the initial data set for better organization.
+<br><br>
+The figures calculated are displayed in the following plot graphic, and in the table below. The preprocessing step first clears the data from the NA or nulls values and then the data manipulation to calculate the percentage for each category.</p>
+  
+```{r, fig.width=8, fig.height=6}
+
+#------------------------------------------------------------------------------------------------------------
+# Create the data subsets for research question 1 by providing only the required columns
+#------------------------------------------------------------------------------------------------------------
+
+# Dataset for research question 1
+Col <- c('X_state', 'genhlth', 'hlthpln1', 'X_bmi5cat', 'X_bmi5', 'exerany2')
+data.rsq <- brfss2013[, Col]
+
+#------------------------------------------------------------------------------------------------------------
+# Data preprocessing
+#------------------------------------------------------------------------------------------------------------
+
+USPop2013 <- 315091138
+
+# Remove rows with missing data
+data.rsq <- data.rsq[complete.cases(data.rsq),]
+
+# evaluate the percentage of the US population based on bmi Category
+bmi.cat <- plyr::count(data.rsq, 'X_bmi5cat')
+bmi.cat <- bmi.cat[-5,]
+bmi.cat$percent <- prop.table(bmi.cat$freq)
+bmi.cat$population <- lapply(bmi.cat$percent, function(x) {
+  USPop2013 * x
+})
+
+ggplot(bmi.cat, aes(x = factor(X_bmi5cat), y = percent, fill = percent, alpha = 0.8)) +
+  geom_bar(stat = 'identity') +
+  xlab('BMI Category') + 
+  ylab('Percentage of US population') +
+  ggtitle('Distribution of US population in regards to BMI category') +
+  geom_text(aes(label = round(percent * 100, 2)), vjust = 1.6, color = 'black', position = position_dodge(0.9), size = 3)
+
+```
+<br>
+<p>The resulting table shows that about 2/3 of the US population suffers from overweight or obesity. This means that around 200 million people are in one category or another. This high percentage is an alarm because it can indicate enormous health and economic costs in the medium and long term.</p>
+
+<br>
+  
+  BMI category   | Percentage of US population  | Number of people in category |
+  ---------------|------------------------------|------------------------------|
+  Underweight    |  1.74%                       | 5'497'557                    |
+  Normal weight  | 33.15%                       | 104'445'574                  |
+  Overweight     | 35.92%                       | 113'176'902                  |
+  Obese          | 29.19%                       | 91'971'105                   | 
+  
+<br>
+
+```{r, fig.width = 10, fig.height = 7}
+
+#------------------------------------------------------------------------------------------------------------
+# Plots design
+#------------------------------------------------------------------------------------------------------------
+
+# Relation between health care and general condition 
+mosaicplot( ~ genhlth + hlthpln1, data = data.rsq, xlab = 'General health', ylab = 'Health care plan', color = c('darkblue', 'purple'), 
+            main = 'General health vs helth care plan')
+
+# Relation between exercise and general condition 
+mosaicplot( ~ genhlth + exerany2, data = data.rsq, xlab = 'General health', ylab = 'Physical excercise', color = c('darkblue', 'purple'), 
+            main = 'General health vs physical excercise')
+
+```
+<br>
+<p>The previous mosaic diagrams show, on one hand, the relation between general health and access to health care; and on the other, the relation between general health and physical training.
+<br><br>
+It can be inferred that having a health plan encourages people to exercise and have a good diet. In the graph there's a clear inclination that people who perform physical exercise often tend to lead a healthier life.
+<br><br>
+Further, the general health of a person is also attributed to other factors such as the environment, stress, genetic / psychological diseases, socio-economic level, etc. </p>
+
+<hr>
+
+<h4>Research question 2:</h4>
+
+```{r, fig.width = 8, fig.height = 6}
+
+#------------------------------------------------------------------------------------------------------------
+# Research question 2 - Association between BMI and quantity of total physical activity per week and per gender
+#------------------------------------------------------------------------------------------------------------
+
+brfss2013_pt_bmi <- brfss2013 %>% filter(pa1min_ != "NA") %>% filter(X_bmi5 != "NA") %>% mutate(bmi = X_bmi5 / 100)
+
+ggplot(brfss2013_pt_bmi, aes(x = bmi, y = log(pa1min_ + 1), colour = sex)) + 
+  geom_point(shape = 19, alpha = 1/4) + 
+  geom_smooth(method = lm, se = FALSE) + 
+  scale_colour_manual(name = 'Genre', breaks = c('Male', 'Female'), values = c('#07004D', '#FF81E4')) + 
+  xlab('BMI') + 
+  ylab('Minutes of physical training per week')
+
+brfss2013_pt_bmi %>% group_by(sex) %>% summarise(corr_bmi_phys_act = cor(bmi, pa1min_))
+
+```
+<br>
+<p>The statistics above show a tendency to do less physical activity when the BMI is higher for both men and women. But, we can't say that this is the result of a real trend in the data or happens by chance.</p>
+
+<hr>
+
+<h4>Research question 3:</h4>
+
+```{r, fig.width=8, fig.height=6}
+
+#------------------------------------------------------------------------------------------------------------
+# Research question 3 - Relation between physical activity, work status and income level
+#------------------------------------------------------------------------------------------------------------
+
+# genhlth: General Health
+# income2: Income Level
+# Remove all NA data.
+physAct_rm.na <- filter(brfss2013, !is.na(exerany2), !is.na(income2), !is.na(employ1))
+
+# Find porportion that does any exercise grouped by income.
+physAct_income <- physAct_rm.na %>% group_by(income2) %>% summarise(prop_exer = sum(exerany2 == "Yes") / n())
+
+# Print result
+physAct_income
+
+# In this Plot it replace spaces with line breaks in income2 names.
+levels(physAct_income$income2) <- gsub(" ", "\n", levels(physAct_income$income2))
+ggplot(physAct_income, aes(income2, prop_exer)) +
+  geom_point(aes(income2, prop_exer)) +
+  labs(title='Percentage of people that exercised in last 30 days vs. income', x='Income', y='Percentage who exercises')
+
+```
+<br>
+<p><b>Correlation between physical training in last 30 days, work status and income level.</b><br>
+In the graphic above it can be observed a strong correlation between physical activity and high income level. Therefore, one of the proposed hypotheses in which greater income is more physical activity is fulfilled.
+<br><br>
+As has been clarified in the beginning, since this is an observational study, it will not lead to any causality. For this reason, it is interesting to discover that the sample surveyed the higher the income, the higher the proportion of physical activity performed.
+<br>
+Now, let's explore the data a little more and discover other possible relations.</p>
+
+```{r, fig.width=8, fig.height=6}
+# Find percentage of people who does any exercise grouped by employment status.
+physAct_employ <- physAct_rm.na %>% group_by(employ1) %>% summarise(prop_exer = sum(exerany2 == "Yes") / n())
+
+# Print.
+physAct_employ
+
+# Plot
+levels(physAct_employ$employ1) <- gsub(" ", "\n", levels(physAct_employ$employ1))
+ggplot(physAct_employ, aes(employ1, prop_exer)) +
+  geom_point(aes(employ1, prop_exer)) +
+  labs(title='Percentage of people that exercised in last 30 days vs. employment status',
+       x='Employment status', y='Percentage who exercises')
+
+```
+<br>
+<p>As we can see in the graphic above, the employment status with the highest percentage of physical activity in the last 30 days are the "students". And on the contrary, the lowest one is "Without work for 1 year or more".
+
+<b>Regarding the latter, what possible deductions could we make with the information we have? </b><br>
+a) One can be: lack of exercise and not having a job is the result of lack of motivation, depression or stress.
+<br><br>
+b) Another opposite assumption would be: being unemployed induces demotivation and / or depression, and as a result, few or no predisposition to perform any physical activity.</p>
+
+<hr>
+
+<h4>Research question 4:</h4>
+
+```{r, fig.width = 8, fig.height = 6}
+
+#------------------------------------------------------------------------------------------------------------
+# Research question 4 - Correlation between income and general health. Differences between genres.
+#------------------------------------------------------------------------------------------------------------
+
+# Query the relevant variables
+inc_hea_gen <- select(brfss2013, genhlth ,income2) %>% 
+  filter(!is.na(genhlth), !is.na(income2))
+
+# Present totals of variables being analayzed
+inc_hea_gen %>% group_by(genhlth) %>%    summarise(count=n())
+
+inc_hea_gen %>% group_by(income2) %>%   summarise(count=n())
+
+ggplot(data = inc_hea_gen, aes(x = genhlth , y = income2)) +
+  geom_count(color = 'purple') +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  xlab('General Health') +
+  ylab ('Income Level')
+
+```
+<hr>
+
+<p>More than 50% of the surveyed population reported an income level greater than USD 35,000. In appearance, there is a positive relation between earning higher income and health levels at least "good".
+<br><br>
+Further, the reported numbers of "very good" and "excellent" tend to go up as ascends the income scale. This could indicate that there's some causal relation, although more research would be necessary.
+<br><br>
+Therefore, by not having a more robust analysis to demonstrate causality, It would be interesting to add to this survey a further segmentation of those who earn more than u$s75,000. In this way, it can be discover how much correlation there's between those who have higher incomes and their general health.
+<br><br>
+It can be assumed that positions with much higher salaries have more responsibilities, overtime and higher levels of stress, and all this could correlate to lower health levels.</p>
+
+<hr>
